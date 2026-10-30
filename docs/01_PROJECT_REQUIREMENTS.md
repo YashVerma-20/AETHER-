@@ -167,7 +167,7 @@ The runtime architecture consists of:
   - If local Ollama times out or returns malformed output, the system shall execute up to 1 retry with exponential backoff before failing the node cleanly without database corruption.
   - *Verification:* Failure-injection test with mocked Ollama outages.
 - **NFR-005: Cold-Start Resilience**
-  - In Group C (history-aware), if the history store contains zero matching or statistically significant records ($N < 3$), the controller shall automatically fall back to rule-based selection with an explicit explanation.
+  - In Group C (history-aware), if the history store contains zero matching or statistically significant records ($N < 5$), the controller shall automatically fall back to rule-based selection with an explicit explanation.
   - *Verification:* Cold-start test suite on an empty database.
 
 ### 4.3 Research Reproducibility & Explainability

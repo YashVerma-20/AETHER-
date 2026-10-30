@@ -24,7 +24,7 @@
 | Risk ID | Description | Severity | Likelihood | Mitigation Strategy |
 | :--- | :--- | :--- | :--- | :--- |
 | **RR-01** | **LLM Evaluation Bias:** Using an LLM to evaluate the quality of another LLM's output introduces systematic leniency, position bias, and circular justification. | High | Medium | 1. Strictly forbid unvalidated LLM self-evaluation as ground truth.<br>2. Rely on objective deterministic checks (schema compliance, constraint verification) for success rate.<br>3. Use double-blind human rubric scoring on benchmark sample sets to anchor automated quality metrics. |
-| **RR-02** | **Historical Feedback Instability (Cold-Start & Overfitting):** Early noisy or outlier runs in Group C might lead the history-aware selector to prematurely discard viable topologies. | High | Medium | 1. Enforce a cold-start threshold: Require $N \ge 3$ statistically consistent runs in a task cluster before historical weighting overrides rule defaults.<br>2. Apply epsilon-greedy exploration ($\epsilon = 0.10$) to periodically test alternative topologies. |
+| **RR-02** | **Historical Feedback Instability (Cold-Start & Overfitting):** Early noisy or outlier runs in Group C might lead the history-aware selector to prematurely discard viable topologies. | High | Medium | 1. Enforce a cold-start threshold: Require $N \ge 5$ statistically consistent runs in a task cluster before historical weighting overrides rule defaults.<br>2. Apply confidence dampening based on historical variance ($1.0 - \sigma_{\text{quality}}$).<br>3. Enforce epsilon-greedy exploration ($\epsilon = 0.10$) to periodically re-test alternative topologies. |
 | **RR-03** | **Confounding Hardware Variations:** Host background tasks, thermal throttling, or battery states on the laptop could skew latency and token rate measurements. | Medium | Medium | 1. Conduct all comparative benchmark runs under fixed conditions: plugged into AC power, high-performance power plan, idle background apps.<br>2. Log CPU temperature and clock frequency at run start and end; discard outlier runs with thermal throttling spikes. |
 
 ---
@@ -43,6 +43,7 @@
 1. **Local LLM Viability:** We assume that modern 4-bit quantized open-weight models (Qwen3 14B or 8B fallbacks) running locally via Ollama possess sufficient instruction-following fidelity to fulfill distinct agent roles (Researcher, Analyst, Writer, Reviewer).
 2. **Task Categorization Feasibility:** We assume that user prompts can be reliably mapped into discrete complexity scores and capability requirements using lightweight rule-based or embedding-based heuristics without invoking expensive multi-second analysis.
 3. **Pareto Superiority of Adaptive Teaming:** We hypothesize that tailoring team size and role composition to task difficulty outperforms static one-size-fits-all pipelines in resource-constrained environments.
+4. **Provisional Performance Targets:** Quantitative efficiency targets in H3 ($\ge 30\%$ latency reduction, $\ge 35\%$ token reduction, $\le 0.05$ quality degradation margin) are provisional targets subject to empirical calibration against baseline measurements in Phase 4.
 
 ---
 
@@ -53,3 +54,6 @@
 | **UD-01** | **Primary Model Selection:** Whether Qwen3 14B or DeepSeek-R1 14B fits sustainably in 16 GB RAM without OS thrashing, or whether 8B is required. | Open (Pending empirical measurement) | Phase 2 (Development Environment and Local LLM) |
 | **UD-02** | **Task Similarity Algorithm:** Choice between lightweight local embedding cosine similarity vs. categorical feature distance for historical case retrieval. | Specification Defined (Categorical feature matching default, vector fallback) | Phase 6 (Adaptive Decision Engine) |
 | **UD-03** | **External Context Retrieval:** Designing a local offline retrieval mechanism (e.g., local SQLite/Chroma vector store) to provide the Researcher agent with reference documents without internet access. | Deferred to offline corpora | Phase 4 / Phase 6 |
+| **UD-04** | **Calibration of Efficiency Thresholds:** Empirically verifying whether the provisional $\ge 30\%$ latency and $\ge 35\%$ token savings in H3 represent realistic bounds on target hardware. | Open (Awaiting baseline timing data) | Phase 4 / Phase 5 |
+| **UD-05** | **Human-Evaluator Cohort:** Establishing the exact size, training rubric, and inter-rater agreement threshold ($\alpha \ge 0.70$) for subjective quality audits. | Specification Defined | Phase 5 / Phase 10 |
+
