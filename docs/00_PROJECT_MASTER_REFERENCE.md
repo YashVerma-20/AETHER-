@@ -116,9 +116,14 @@ inspect before editing, make minimal changes, run relevant checks, and
 append a factual work-session record to
 `docs/logs/ANTIGRAVITY_MASTER_LOG.md`.
 
-## Current preparation baseline
+## Phase 1 Research Specification Status
 
-This Stage A reference pack defines project instructions and initial
-documentation. It does not claim that application code was inspected,
-created, modified, or tested. Record the actual repository state when
-beginning implementation.
+Phase 1 establishes the comprehensive requirements, experimental design,
+agent specifications, evaluation metrics, and risk registers:
+- `docs/01_PROJECT_REQUIREMENTS.md`: System Functional (FR-001–FR-012) and Non-Functional (NFR-001–NFR-009) Requirements.
+- `docs/05_RESEARCH_DESIGN.md`: Research questions (RQ1–RQ5), testable hypotheses (H1–H5), 3 experimental groups (A, B, C), controls, and evaluation metrics (M-01–M-08).
+- `docs/06_AGENT_SPECIFICATIONS.md`: Role contracts, capabilities, selection conditions, and pruning rules for Researcher, Analyst, Writer, and Reviewer.
+- `docs/07_RISK_AND_ASSUMPTIONS_REGISTER.md`: Technical, research, resource risks, assumptions, and unresolved decisions.
+
+No application code has been implemented. Implementation authorization begins strictly upon approval of subsequent phases.
+

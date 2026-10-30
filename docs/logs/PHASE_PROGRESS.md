@@ -20,14 +20,16 @@ only when there is evidence.
   -----------------------------------------------------------------------
   Phase             Name              Status            Evidence / notes
   ----------------- ----------------- ----------------- -----------------
-  Preparation       Stage A reference PREPARED ---      Documentation
-                    pack              repository        pack drafted;
-                                      integration       actual repository
-                                      pending           not inspected
+  Preparation       Stage A reference COMPLETED         Git repository initialized,
+                    pack & environment                  GitHub origin synced (9f9736f),
+                                                        isolated Python venv (.venv)
+                                                        verified with pip 26.2.2.
 
-  1                 Requirements,     NOT STARTED       
-                    Research Design                     
-                    and Scope                           
+  1                 Requirements,     COMPLETED         Complete requirements (FR-001–FR-012,
+                    Research Design                     NFR-001–NFR-009), research design (RQ1–RQ5,
+                    and Scope                           H1–H5, Groups A/B/C, M-01–M-08),
+                                                        agent specs, and risk register documented
+                                                        and validated. Zero code implemented.
 
   2                 Development       NOT STARTED       
                     Environment and                     
@@ -72,9 +74,9 @@ only when there is evidence.
   -----------------------------------------------------------------------
 
 ## Current active phase
+ 
+Phase 1 (Requirements, Research Design and Scope) COMPLETED. Phase 2 NOT STARTED (awaiting explicit authorization).
 
-Preparation / repository integration. Phase 1 has not been declared
-started.
 
 ## Update requirements
 
