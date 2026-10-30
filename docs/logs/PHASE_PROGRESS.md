@@ -38,9 +38,12 @@ only when there is evidence.
                                                         (7.5–8.2 tok/s). 14B models documented as
                                                         impractical on 16 GB RAM host. Zero API cost.
 
-  3                 Backend           NOT STARTED       
-                    Foundation and                      
-                    Database                            
+  3                 Backend           COMPLETED         Dedicated local PostgreSQL 17 cluster
+                    Foundation and                      initialized on port 5433 (64MB shared_buffers).
+                    Database                            FastAPI backend modularized under backend/.
+                                                        Alembic initial migration applied for 8 core
+                                                        research tables in aether_db. All 6 unit and
+                                                        integration tests passing. Zero paid services.
 
   4                 Baseline          NOT STARTED       
                     Multi-Agent                         

@@ -27,8 +27,13 @@ dist/
 *.egg-info/
 *.egg
 
+# Local database & runtime data
+data/
+*.log
+
 # IDE & OS files
 .vscode/
 .idea/
 Thumbs.db
 Desktop.ini
+

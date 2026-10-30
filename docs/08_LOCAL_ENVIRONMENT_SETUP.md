@@ -147,3 +147,59 @@ print("Latency:", round(t1 - t0, 3), "s")
 print("Tokens:", res.get("eval_count"))
 print("Speed:", round(res.get("eval_count") / (res.get("eval_duration") / 1e9), 2), "tok/s")
 ```
+
+---
+
+## 6. PostgreSQL Local Cluster Setup (Port 5433)
+
+### 6.1 Cluster Configuration
+AETHER operates on an isolated, self-contained local PostgreSQL 17 cluster initialized at `D:\AETHER\data\postgres` (ignored in `.gitignore`). This ensures zero interference with the host's primary PostgreSQL service running on port 5432.
+
+- **Host & Port:** `127.0.0.1:5433`
+- **Authentication:** `scram-sha-256`
+- **Database Name:** `aether_db`
+- **Application User:** `aether_user`
+- **Memory Buffers:** `shared_buffers = 64MB` (conservative hardware budget)
+- **Max Connections:** `30`
+
+### 6.2 Managing the Database Cluster
+- **Start cluster:**
+  ```powershell
+  & "C:\Program Files\PostgreSQL\17\bin\pg_ctl.exe" -D "D:\AETHER\data\postgres" -l "D:\AETHER\data\postgres\server.log" start
+  ```
+- **Stop cluster:**
+  ```powershell
+  & "C:\Program Files\PostgreSQL\17\bin\pg_ctl.exe" -D "D:\AETHER\data\postgres" stop
+  ```
+- **Check cluster status:**
+  ```powershell
+  & "C:\Program Files\PostgreSQL\17\bin\pg_ctl.exe" -D "D:\AETHER\data\postgres" status
+  ```
+
+---
+
+## 7. FastAPI Backend Service
+
+### 7.1 Running the Backend
+To start the FastAPI application locally:
+```powershell
+$env:PYTHONPATH="D:\AETHER"
+& "D:\AETHER\.venv\Scripts\uvicorn.exe" backend.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+### 7.2 Running Migrations
+To inspect and apply database schema migrations:
+```powershell
+# Generate migration
+& "D:\AETHER\.venv\Scripts\alembic.exe" revision --autogenerate -m "description"
+
+# Apply migrations
+& "D:\AETHER\.venv\Scripts\alembic.exe" upgrade head
+```
+
+### 7.3 Executing Verification Tests
+```powershell
+$env:PYTHONPATH="D:\AETHER"
+& "D:\AETHER\.venv\Scripts\pytest.exe" backend\tests -v
+```
+
