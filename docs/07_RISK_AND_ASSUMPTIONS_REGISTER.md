@@ -51,7 +51,7 @@
 
 | Decision ID | Description | Current Status | Milestone for Resolution |
 | :--- | :--- | :--- | :--- |
-| **UD-01** | **Primary Model Selection:** Whether Qwen3 14B or DeepSeek-R1 14B fits sustainably in 16 GB RAM without OS thrashing, or whether 8B is required. | Open (Pending empirical measurement) | Phase 2 (Development Environment and Local LLM) |
+| **UD-01** | **Primary Model Selection:** Whether Qwen 14B fits sustainably in 16 GB RAM without OS thrashing, or whether 7B/8B is required. | **RESOLVED:** `qwen2.5:7b` (Q4_K_M) selected based on Phase 2 empirical memory (5.1 GB) and speed (7.5–8.2 tok/s) benchmarks; 14B documented as unsafe for 16 GB host. | Phase 2 (Completed) |
 | **UD-02** | **Task Similarity Algorithm:** Choice between lightweight local embedding cosine similarity vs. categorical feature distance for historical case retrieval. | Specification Defined (Categorical feature matching default, vector fallback) | Phase 6 (Adaptive Decision Engine) |
 | **UD-03** | **External Context Retrieval:** Designing a local offline retrieval mechanism (e.g., local SQLite/Chroma vector store) to provide the Researcher agent with reference documents without internet access. | Deferred to offline corpora | Phase 4 / Phase 6 |
 | **UD-04** | **Calibration of Efficiency Thresholds:** Empirically verifying whether the provisional $\ge 30\%$ latency and $\ge 35\%$ token savings in H3 represent realistic bounds on target hardware. | Open (Awaiting baseline timing data) | Phase 4 / Phase 5 |

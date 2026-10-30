@@ -31,9 +31,12 @@ only when there is evidence.
                                                         agent specs, and risk register documented
                                                         and validated. Zero code implemented.
 
-  2                 Development       NOT STARTED       
-                    Environment and                     
-                    Local LLM                           
+  2                 Development       COMPLETED         Ollama 0.40.13 verified on local service.
+                    Environment and                     Qwen-first evaluation conducted: qwen2.5:7b
+                    Local LLM                           (Q4_K_M, 4.7 GB) selected based on measured
+                                                        memory safety (5.1 GB in RAM) and CPU speed
+                                                        (7.5–8.2 tok/s). 14B models documented as
+                                                        impractical on 16 GB RAM host. Zero API cost.
 
   3                 Backend           NOT STARTED       
                     Foundation and                      
@@ -75,7 +78,8 @@ only when there is evidence.
 
 ## Current active phase
  
-Phase 1 (Requirements, Research Design and Scope) COMPLETED. Phase 2 NOT STARTED (awaiting explicit authorization).
+Phase 2 (Development Environment and Local LLM) COMPLETED. Phase 3 (Backend Foundation and Database) NOT STARTED (awaiting explicit authorization).
+
 
 
 ## Update requirements

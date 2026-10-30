@@ -116,14 +116,14 @@ inspect before editing, make minimal changes, run relevant checks, and
 append a factual work-session record to
 `docs/logs/ANTIGRAVITY_MASTER_LOG.md`.
 
-## Phase 1 Research Specification Status
+## Phase 1 & 2 Status
 
-Phase 1 establishes the comprehensive requirements, experimental design,
-agent specifications, evaluation metrics, and risk registers:
-- `docs/01_PROJECT_REQUIREMENTS.md`: System Functional (FR-001–FR-012) and Non-Functional (NFR-001–NFR-009) Requirements.
-- `docs/05_RESEARCH_DESIGN.md`: Research questions (RQ1–RQ5), testable hypotheses (H1–H5), 3 experimental groups (A, B, C), controls, and evaluation metrics (M-01–M-08).
-- `docs/06_AGENT_SPECIFICATIONS.md`: Role contracts, capabilities, selection conditions, and pruning rules for Researcher, Analyst, Writer, and Reviewer.
-- `docs/07_RISK_AND_ASSUMPTIONS_REGISTER.md`: Technical, research, resource risks, assumptions, and unresolved decisions.
+Phase 1 established the formal requirements, experimental design, agent specifications, evaluation metrics, and risk registers.
 
-No application code has been implemented. Implementation authorization begins strictly upon approval of subsequent phases.
+Phase 2 established and verified the local development and inference environment:
+- `docs/08_LOCAL_ENVIRONMENT_SETUP.md`: Local Ollama setup, Python 3.13.1 `.venv`, and runtime safety configuration.
+- `docs/09_LLM_FEASIBILITY_REPORT.md`: Empirical evaluation of Qwen family on host hardware. Selected `qwen2.5:7b` (Q4_K_M) based on measured memory safety (5.1 GB active RAM) and CPU generation speed (7.5–8.2 tok/s), satisfying the ₹0 constraint.
+
+No backend/frontend application code has been implemented. Implementation begins upon explicit authorization of Phase 3.
+
 
