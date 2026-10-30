@@ -140,7 +140,7 @@ The runtime architecture consists of:
   - **Verification Method:** Frontend component tests and end-to-end browser verification.
 
 - **FR-012: Experimental Group Performance Dashboard**
-  - **Description:** The frontend shall provide a comparative dashboard visualizing Group A, Group B, and Group C across quality, latency, and agent utilization using Recharts.
+  - **Description:** The frontend shall provide a comparative dashboard visualizing Group A, Group B, and Group C across quality, latency, and agent invocation ratio using Recharts.
   - **Rationale:** Directly supports research evaluation and reporting.
   - **Priority:** Medium (P2)
   - **Acceptance Criteria:** Renders comparative bar and scatter charts querying the FastAPI analytics endpoints; supports filtering by task domain and complexity.
@@ -192,15 +192,16 @@ The runtime architecture consists of:
 
 | Requirement | Research Question | Tested Hypothesis | Architectural Component | Evaluation Metric |
 | :--- | :--- | :--- | :--- | :--- |
-| **FR-001** (Task Ingestion) | RQ1, RQ3 | H1, H3 | FastAPI Backend | Task Success Rate |
+| **FR-001** (Task Ingestion) | RQ1, RQ3 | H1, H3 | FastAPI Backend | Task Success Rate (M-03) |
 | **FR-002** (Task Feature Analysis) | RQ1, RQ2 | H1, H2 | Adaptive Controller | Selection Effectiveness |
-| **FR-003** (Fixed Baseline) | RQ1, RQ3 | H1, H3 | LangGraph Baseline | Latency, Quality, Cost Proxy |
-| **FR-004** (Rule-Based Adaptation) | RQ1, RQ3 | H1, H3 | Adaptive Controller | Latency, Utilization, Quality |
-| **FR-005** (History-Aware Adaptation) | RQ2, RQ5 | H2, H5 | Controller + Postgres | Quality-Latency Pareto, Success |
-| **FR-006** (Explainable Logging) | RQ4 | H4 | PostgreSQL Store | Decision Traceability Score |
-| **FR-007** (Dynamic Orchestration) | RQ1, RQ3 | H1, H3 | LangGraph Engine | Wall-Clock Latency, Failure Rate |
+| **FR-003** (Fixed Baseline) | RQ1, RQ3 | H1, H3 | LangGraph Baseline | Latency (M-01), Quality (M-04), Cost Proxy (M-02) |
+| **FR-004** (Rule-Based Adaptation) | RQ1, RQ3 | H1, H3 | Adaptive Controller | Latency (M-01), Invocation Ratio (M-05), Quality (M-04) |
+| **FR-005** (History-Aware Adaptation) | RQ2, RQ5 | H2, H5 | Controller + Postgres | Quality-Latency Pareto (M-06), Success (M-03) |
+| **FR-006** (Explainable Logging) | RQ4 | H4 | PostgreSQL Store | Decision Traceability Score (M-07) |
+| **FR-007** (Dynamic Orchestration) | RQ1, RQ3 | H1, H3 | LangGraph Engine | Wall-Clock Latency (M-01), Failure Rate (M-08) |
 | **FR-008** (Local Model Adapter) | RQ3 | H3 | Ollama Client Adapter | Inference Latency, Memory Peak |
-| **FR-009** (Evaluation Engine) | RQ1–RQ5 | H1–H5 | Evaluation Module | Quality Rubric, Success Checks |
-| **FR-010** (Feedback Ingestion) | RQ5 | H5 | PostgreSQL Store | Feedback Convergence Rate |
+| **FR-009** (Evaluation Engine) | RQ1–RQ5 | H1–H5 | Evaluation Module | Quality Rubric (M-04), Success Checks (M-03) |
+| **FR-010** (Feedback Ingestion) | RQ5 | H5 | PostgreSQL Store | Feedback Convergence Rate (H5) |
 | **FR-011** (Execution Inspector UI) | RQ4 | H4 | React Frontend | Usability, Trace Inspection |
 | **FR-012** (Group Dashboard) | RQ1–RQ5 | H1–H5 | React Frontend + Recharts | Group Comparison Visuals |
+

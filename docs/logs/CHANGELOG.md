@@ -33,12 +33,20 @@ work-session history belongs in `ANTIGRAVITY_MASTER_LOG.md`.
      - Refined H5 to eliminate monotonic improvement assumptions, modeling transition entropy, regression tracking, and baseline comparisons.
      - Hardened Group C safeguards: $N \ge 5$ confidence threshold, variance dampening, temporal separation, train/test task partitioning, and separation of objective telemetry from subjective scores.
      - Audited all metrics M-01 through M-08 (clarified agent utilization index $0.25 - 1.50$, split decision record completeness from human understandability, and treated zero failures as aspirational rather than assumed).
+ -   Final Phase 1 Methodology Consistency Audit:
+     - Formally distinguished 60 task-level experimental units from 540 repeated execution runs ($N=60, R=3$), establishing task-mean aggregation and Linear Mixed-Effects Models (LMM) to account for task-level clustering.
+     - Documented exact mathematical assumptions for statistical power ($1-\beta \approx 0.82$ for medium effect $d \ge 0.38$ on $N=60$ paired task means) and declared explicit limitations for small effects.
+     - Defined explicit protocols for Group C: Protocol 1 (Frozen-History Held-Out Evaluation on 40 calibration / 20 held-out tasks) to prevent data leakage, and Protocol 2 (Online Continual Adaptation) with strict temporal sequencing.
+     - Formalized heuristic confidence weighting ($w_{\text{conf}}$) with variance dampening floor, clarifying it as a bounded engineering discount function rather than calibrated statistical probability.
+     - Renamed Metric M-05 to Agent Invocation Ratio ($\eta_{\text{invocations}}$) and decoupled it from unique team size.
+     - Verified all 9 cited academic literature entries and updated requirements traceability matrix.
 
 ### Status
 
--   Phase 1 Research Validation and Refinement COMPLETED.
+-   Phase 1 Final Methodology Audit COMPLETED and fully verified.
 -   Zero application code, dependencies, or model downloads created.
 -   Phase 2 (Environment and Local LLM) pending authorization.
+
 
 
 
