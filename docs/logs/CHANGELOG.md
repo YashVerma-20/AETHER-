@@ -45,19 +45,24 @@ work-session history belongs in `ANTIGRAVITY_MASTER_LOG.md`.
      - Verified local Ollama v0.40.13 service running on `http://127.0.0.1:11434`.
      - Confirmed Python 3.13.1 isolated virtual environment (`.venv`) functionality.
      - Followed Qwen-first directive: Evaluated 14B candidates vs 7B on Intel Core i5-13550H / 16 GB RAM host.
-     - Documented that 14B models require ~11–12 GB RAM in active generation, posing critical risk of memory exhaustion and disk thrashing on 16 GB hardware.
-     - Pulled and benchmarked `qwen2.5:7b` (Q4_K_M, 4.7 GB disk footprint).
-     - Measured empirical memory: 5.1 GB active RAM in Ollama, preserving >5.5 GB free host RAM.
+     - Downloaded and empirically benchmarked `qwen2.5:7b` (Q4_K_M, 4.7 GB disk footprint).
+     - Measured empirical memory: 5.1 GB active RAM in Ollama runner, leaving 2.44 GB free physical RAM during active inference.
      - Measured CPU inference speeds: 7.33–8.24 tokens/sec with verified capabilities across structured JSON extraction, step-by-step logical reasoning, and reviewer constraint checking.
      - Created `docs/08_LOCAL_ENVIRONMENT_SETUP.md` (environment and runtime safety guide).
-     - Created `docs/09_LLM_FEASIBILITY_REPORT.md` (empirical feasibility analysis and model selection justification).
-     - Resolved decision UD-01 by selecting `qwen2.5:7b` as primary project model.
+     - Created `docs/09_LLM_FEASIBILITY_REPORT.md` (feasibility analysis and working model justification).
+ -   Phase 2 Evidence Validation Audit:
+     - Audited Qwen model series: Clarified that `qwen3` series was NOT TESTED as Ollama currently serves production open weights under `qwen2.5`. Future `qwen3` re-evaluation scheduled for subsequent milestones.
+     - Explicitly distinguished verified empirical measurements (`qwen2.5:7b`) from unexecuted registry metadata and memory projections (`qwen2.5:14b` and `deepseek-r1:14b` marked as NOT TESTED).
+     - Clarified RAM measurements: 5.76 GB free before model load, 5.1 GB active model allocation in Ollama, leaving ~2.44 GB of free physical RAM during active generation (correcting previous overestimate of >5.5 GB headroom during inference).
+     - Marked multi-agent pipeline latency projections (20–45s) as unverified theoretical estimates to be measured empirically in Phase 4.
 
 ### Status
 
--   Phase 1 (Requirements & Research Design) and Phase 2 (Environment & Local LLM) COMPLETED.
+-   Phase 1 and Phase 2 (Environment & Local LLM Feasibility) AUDITED AND COMPLETED.
+-   `qwen2.5:7b` confirmed as verified local working model.
 -   Zero commercial API costs incurred (₹0 budget preserved).
 -   Phase 3 (Backend Foundation & Database) pending authorization.
+
 
 
 

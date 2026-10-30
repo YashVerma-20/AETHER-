@@ -82,10 +82,10 @@ Invoke-RestMethod -Uri "http://127.0.0.1:11434/api/tags" -Method Get
 
 ## 4. Model Management & Operational Rules
 
-### 4.1 Approved Model Policy
+### 4.1 Approved Working Model
 - **Primary Family:** Alibaba Cloud **Qwen** is the official preferred LLM family for AETHER.
-- **Model Selected:** `qwen2.5:7b` (7.6B parameters, Q4_K_M 4-bit quantization, 4.7 GB disk footprint).
-- **Reason for 7B Selection over 14B:** On 16 GB total RAM with integrated graphics, 14B models require ~11–12 GB runtime RAM, causing dangerous memory pressure and slow inference (~2–3 tok/s). The 7B model occupies 5.1 GB in memory, runs at ~7.5–8.2 tok/s on CPU, and preserves >5 GB of free RAM for OS, backend, and PostgreSQL stability.
+- **Working Model Selected:** `qwen2.5:7b` (7.61B parameters, Q4_K_M 4-bit quantization, 4.7 GB disk footprint).
+- **Reason for 7B Selection over 14B:** On 16 GB total RAM with integrated graphics, 14B models are estimated to require ~10.5–12 GB runtime RAM, which would exhaust available physical memory on a host where baseline OS and desktop software occupy ~10 GB. The 7B model occupies 5.1 GB in memory, runs at measured ~7.3–8.2 tok/s on CPU, and maintains ~2.44 GB of free physical RAM during active inference to protect against OS thrashing.
 
 ### 4.2 Pulling and Inspecting Models
 To download the approved model:
