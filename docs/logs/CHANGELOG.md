@@ -65,6 +65,15 @@ work-session history belongs in `ANTIGRAVITY_MASTER_LOG.md`.
       - Implemented research schema safeguards: task-level experimental units ($N=60$) distinct from replicate runs ($R=3$); model configuration provenance; nullable token metrics; separation of objective telemetry from subjective rubric scores; explainability linkages; and protocol origin tagging in historical records.
       - Created comprehensive automated test suite `backend/tests/test_foundation.py` verifying startup, health endpoints, live PostgreSQL connectivity, session lifecycle, model cascades, and graceful 503 error handling on database downtime (6/6 tests passing).
       - Authored comprehensive database documentation in `docs/10_DATABASE_SCHEMA.md` and updated `docs/08_LOCAL_ENVIRONMENT_SETUP.md`.
+  -   Phase 3 Security, Traceability, and Schema Audit:
+      - Rotated exposed PostgreSQL passwords for both `postgres` superuser and `aether_user` using high-entropy random secrets, verifying connectivity without revealing credentials.
+      - Stripped hardcoded development password fallback from `backend/config.py` so credentials must load strictly from `.env`.
+      - Inspected Git commit history: confirmed `.env` was never committed; confirmed default placeholder was committed in `3355c34` and subsequently neutralized.
+      - Confirmed and tested database-level unique constraint on `experimental_runs(task_id, condition_id, run_number)` via automated test `test_experimental_runs_uniqueness_enforcement`.
+      - Added `source_run_ids` (JSONB) to `historical_performance_records` via Alembic migration `bee8c24b9098` for complete bi-directional auditability back to contributing experimental runs.
+      - Documented held-out data leakage prevention protocols in `docs/10_DATABASE_SCHEMA.md`.
+      - Corrected unsupported "zero memory risk" claims in documentation, framing RAM constraints accurately around active monitoring.
+      - Expanded test suite to 7 automated tests (7/7 passing).
 
 ### Status
 

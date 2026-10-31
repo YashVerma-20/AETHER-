@@ -224,6 +224,9 @@ class HistoricalPerformanceRecord(Base):
     # Provenance separation to prevent data leakage (Protocol 1 vs Protocol 2)
     protocol_origin = Column(String(32), nullable=False, default="CALIBRATION")  # CALIBRATION, FROZEN, ONLINE_BATCH
     
+    # Source run traceability: list of experimental_run UUIDs contributing to this historical aggregate
+    source_run_ids = Column(JSONB, nullable=False, default=list)
+
     sample_count = Column(Integer, nullable=False, default=0)
     mean_wall_clock_ms = Column(Float, nullable=True)
     std_wall_clock_ms = Column(Float, nullable=True)

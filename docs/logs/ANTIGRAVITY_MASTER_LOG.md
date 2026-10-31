@@ -713,7 +713,7 @@ Memory Footprint  WMI / CIM         PASSED                       PostgreSQL chil
 
 #### Issues and risks
 
-Memory monitoring remains critical: during active LLM inference with `qwen2.5:7b`, host physical free RAM drops to ~2.44 GB. The conservative PostgreSQL pool (`pool_size=5`, `shared_buffers=64MB`) comfortably fits within this ceiling.
+Memory constraints remain tight: during active LLM inference with `qwen2.5:7b`, measured host physical free RAM drops to ~2.44 GB. While the conservative PostgreSQL pool (`pool_size=5`, `shared_buffers=64MB`) is designed to minimize resident overhead, concurrent execution of LLM generation, backend processing, OS background services, and IDE tasks cannot be guaranteed to never experience memory pressure or paging under burst activity. Active memory tracking must remain an operational discipline.
 
 #### Decisions
 
@@ -729,6 +729,105 @@ Phase 3 is complete and verified. Stop and await user authorization before start
 
 Phase 3 (Backend Foundation and Database): COMPLETED AND VERIFIED.
 Phase 4 (Baseline Multi-Agent System): NOT STARTED.
+
+#### Git reference
+
+Commit: `3355c34` (pushed to origin/main).
+
+---
+
+### Session: AETHER-20261031-008
+
+-   Date: 2026-10-31
+-   Start/end time (timezone): 20:17 / 20:33 (Asia/Kolkata, UTC+05:30)
+-   Active phase: Phase 3 Security, Traceability, and Schema Audit
+-   Task/request: Rotate PostgreSQL credentials, inspect Git history for credential exposure, verify runs uniqueness constraint, enforce historical source-run traceability, document held-out data leakage prevention, correct unsupported RAM safety guarantee, and execute test suite.
+-   Approval/scope reference: User instruction for Phase 3 audit completion.
+
+#### Objective
+
+Address all security, schema, and methodology audit items raised on Phase 3:
+1. Rotate both exposed PostgreSQL passwords (for `postgres` and `aether_user`) to random high-entropy strings, updating `.env` and verifying connectivity without revealing passwords.
+2. Inspect Git history for past credential exposure.
+3. Verify or enforce database-level unique constraint on `experimental_runs(task_id, condition_id, run_number)`.
+4. Add `source_run_ids` to `historical_performance_records` via Alembic migration for source-run traceability and document held-out data leakage prevention.
+5. Correct unsupported "zero memory risk" claims regarding PostgreSQL and LLM concurrency.
+6. Execute automated test suite and record audit commit.
+
+#### Repository inspection
+
+-   Git checkpoint confirmed at `3355c34`.
+-   Git history audit: `aether_dev_password_placeholder` was present in commit `3355c34` in `backend/config.py` as default fallback and in session log notes. `.env` has never been tracked or committed.
+-   Database inspection: `experimental_runs` already possessed unique index `ix_runs_task_condition_runnum`. Verified via direct SQL inspection and duplicate rejection testing.
+
+#### Work performed
+
+1.  **Credential Rotation & Verification:**
+    -   Rotated `postgres` superuser password and `aether_user` password on port 5433 cluster to randomly generated 32-character high-entropy alphanumeric strings via `ALTER USER` using parameterized `sql.Literal`.
+    -   Verified live connection as `aether_user` to `aether_db` without exposing passwords in output logs.
+    -   Updated `.env` with new rotated credentials.
+    -   Removed hardcoded fallback password from `backend/config.py` (default set to empty string `""`), ensuring the application fails safely if `.env` is absent.
+2.  **Git History Exposure Audit:**
+    -   Inspected `git log -p -S "aether_dev_password_placeholder"`. Identified that commit `3355c34` contained the initial development string in `backend/config.py`.
+    -   Neutralized in repository: code updated to require `.env`, and database passwords rotated.
+3.  **Experimental Run Uniqueness Verification:**
+    -   Confirmed database-level constraint `ix_runs_task_condition_runnum` on `(task_id, condition_id, run_number)`.
+    -   Added unit test `test_experimental_runs_uniqueness_enforcement` in `backend/tests/test_foundation.py` asserting that attempting to insert a duplicate run triggers a database integrity violation.
+4.  **Historical Source-Run Traceability & Leakage Prevention:**
+    -   Added `source_run_ids = Column(JSONB, nullable=False, default=list)` to `HistoricalPerformanceRecord` in `backend/models.py`.
+    -   Generated Alembic migration `bee8c24b9098` (`add source_run_ids to historical_performance_records`).
+    -   Applied migration to database via `alembic upgrade head`.
+    -   Updated `docs/10_DATABASE_SCHEMA.md` with protocol provenance documentation detailing how held-out tasks ($N=20$) are prevented from leaking into historical aggregates during evaluation.
+5.  **Memory Risk Framing Correction:**
+    -   Corrected unsupported RAM safety guarantees in `docs/logs/ANTIGRAVITY_MASTER_LOG.md`. Acknowledged that with ~2.44 GB free physical RAM during active inference, concurrent load can cause memory pressure, requiring active monitoring rather than theoretical assurances.
+6.  **Test Suite Execution:**
+    -   Updated `test_models_and_relationship_validity` to test `source_run_ids` and protocol provenance.
+    -   Executed test suite: 7/7 tests passed in 1.07s.
+
+#### Files changed
+
+-   Created:
+    -   `backend/alembic/versions/bee8c24b9098_add_source_run_ids_to_historical_.py`
+-   Modified:
+    -   `backend/config.py`
+    -   `backend/models.py`
+    -   `backend/tests/test_foundation.py`
+    -   `docs/10_DATABASE_SCHEMA.md`
+    -   `docs/logs/ANTIGRAVITY_MASTER_LOG.md`
+    -   `docs/logs/CHANGELOG.md`
+-   Deleted: None
+
+#### Commands executed
+
+-   Python rotation script -> Rotated passwords for `postgres` and `aether_user` on port 5433 cluster.
+-   `git log -p -S ...` -> Inspected Git history for credential exposure.
+-   `alembic revision --autogenerate -m "add source_run_ids to historical_performance_records"` -> Created migration.
+-   `alembic upgrade head` -> Applied migration.
+-   `pytest backend/tests -v` -> Executed 7 tests (all 7 passed).
+
+#### Verification
+
+----------------------------------------------------------------------------------
+Check             Command/method    Status                       Evidence
+----------------- ----------------- ---------------------------- -----------------
+Password Rotation psycopg           PASSED                       Rotated to random 32-char strings; verified live connection
+Git Secret Audit  git log           PASSED                       Identified in 3355c34, neutralized in code and rotated on DB
+Uniqueness Check  SQL & pytest      PASSED                       Duplicate insertion rejected by ix_runs_task_condition_runnum
+Source Traceable  models & alembic  PASSED                       source_run_ids JSONB column added and tested
+Leakage Policy    documentation     PASSED                       Documented in docs/10_DATABASE_SCHEMA.md
+Memory Framing    documentation     PASSED                       Unsupported absolute guarantee corrected in master log
+All Tests Passing pytest            PASSED                       7/7 passed in 1.07s
+----------------------------------------------------------------------------------
+
+#### Remaining work
+
+Phase 3 audit complete and verified. Await user authorization before starting Phase 4.
+
+#### Phase status
+
+Phase 3 (Backend Foundation and Database): AUDITED, VERIFIED, AND CLOSED.
+Phase 4 (Baseline Multi-Agent System): NOT STARTED.
+
 
 
 

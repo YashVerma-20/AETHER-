@@ -22,9 +22,9 @@ class Settings(BaseSettings):
     DB_HOST: str = "127.0.0.1"
     DB_PORT: int = 5433
     DB_USER: str = "aether_user"
-    DB_PASSWORD: str = "aether_dev_password_placeholder"
+    DB_PASSWORD: str = ""
     DB_NAME: str = "aether_db"
-    DATABASE_URL: str = "postgresql+psycopg://aether_user:aether_dev_password_placeholder@127.0.0.1:5433/aether_db"
+    DATABASE_URL: str = ""
 
     # Hardware-conscious connection pooling
     DB_POOL_SIZE: int = 5

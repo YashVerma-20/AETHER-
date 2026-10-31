@@ -172,13 +172,14 @@ def test_models_and_relationship_validity():
         )
         db.add(explanation)
 
-        # 8. Historical Performance Record with protocol provenance
+        # 8. Historical Performance Record with protocol provenance & source_run_ids
         test_cat = f"ANALYSIS_{uuid.uuid4().hex[:6]}"
         hist_record = HistoricalPerformanceRecord(
             task_category=test_cat,
             complexity_level=2,
             topology_signature="Analyst->Writer",
             protocol_origin="CALIBRATION",
+            source_run_ids=[str(run.id)],
             sample_count=1,
             mean_wall_clock_ms=18500.0,
             mean_quality_score=0.88,
@@ -197,6 +198,12 @@ def test_models_and_relationship_validity():
         assert fetched_run.performance_measurement.constraint_success is True
         assert fetched_run.decision.selected_topology == ["Analyst", "Writer"]
         assert fetched_run.decision.explanation.rule_rationale == "Triggered Rule R-02."
+
+        # Assert historical record traceability and provenance
+        fetched_hist = db.query(HistoricalPerformanceRecord).filter_by(id=hist_record.id).first()
+        assert fetched_hist is not None
+        assert fetched_hist.protocol_origin == "CALIBRATION"
+        assert str(run.id) in fetched_hist.source_run_ids
 
         # Cascade cleanup: deleting task deletes runs, agent executions, measurements, and decisions
         db.delete(task)
@@ -238,3 +245,66 @@ def test_database_connection_failure_safe_handling(monkeypatch):
     assert payload["status"] == "unhealthy"
     assert payload["connected"] is False
     assert "Connection refused" in payload["error"]
+
+
+def test_experimental_runs_uniqueness_enforcement():
+    """Verify database-level uniqueness constraint on (task_id, condition_id, run_number)."""
+    gen = get_db()
+    db = next(gen)
+    try:
+        # Create test task and condition
+        cond_id = f"UNIQ_GRP_{uuid.uuid4().hex[:6]}"
+        condition = ExperimentalCondition(
+            id=cond_id,
+            name="Uniqueness Condition",
+            historical_memory_enabled=False,
+            selection_policy="FIXED_PIPELINE",
+        )
+        task = Task(
+            task_key=f"UNIQ-TASK-{uuid.uuid4().hex[:6]}",
+            title="Uniqueness Task",
+            prompt="Prompt",
+            category="CODE",
+            complexity_level=1,
+            protocol_split="CALIBRATION",
+            deterministic_constraints={},
+        )
+        db.add(condition)
+        db.add(task)
+        db.commit()
+
+        # Insert run 1
+        run1 = ExperimentalRun(
+            task_id=task.id,
+            condition_id=condition.id,
+            run_number=1,
+            status="COMPLETED",
+            model_id="qwen2.5:7b",
+        )
+        db.add(run1)
+        db.commit()
+
+        # Attempt duplicate insertion with same task_id, condition_id, run_number=1
+        run2_duplicate = ExperimentalRun(
+            task_id=task.id,
+            condition_id=condition.id,
+            run_number=1,
+            status="COMPLETED",
+            model_id="qwen2.5:7b",
+        )
+        db.add(run2_duplicate)
+        with pytest.raises(Exception) as exc_info:
+            db.commit()
+
+        assert "ix_runs_task_condition_runnum" in str(exc_info.value) or "duplicate key" in str(exc_info.value)
+        db.rollback()
+
+        # Clean up
+        db.delete(task)
+        db.delete(condition)
+        db.commit()
+    finally:
+        try:
+            next(gen)
+        except StopIteration:
+            pass

@@ -161,6 +161,13 @@ Provides complete natural-language and rule justifications for team selections.
 ### 2.8 `historical_performance_records` (Group C Experience Store)
 Aggregated performance store queried by Group C controller to evaluate candidate topologies.
 
+#### Protocol Provenance and Held-Out Data Leakage Prevention:
+To prevent circular evaluation and data leakage in accordance with Section 6 of `05_RESEARCH_DESIGN.md`:
+1. **Calibration Tasks (N=40):** Populates historical aggregates tagged with `protocol_origin = 'CALIBRATION'`.
+2. **Frozen History Freeze:** Prior to held-out evaluation, historical aggregates are frozen (`protocol_origin = 'FROZEN'`).
+3. **Held-Out Test Tasks (N=20):** Group C queries historical evidence strictly where `protocol_origin IN ('CALIBRATION', 'FROZEN')`. No evaluation outcomes from held-out runs are permitted to update or create historical aggregates during the held-out testing phase.
+4. **Source Run Traceability:** Every aggregate record stores `source_run_ids` (JSONB array of contributing `experimental_runs.id` UUIDs), ensuring full bi-directional auditability from aggregate back to individual technical runs.
+
 | Column | Type | Constraints | Description |
 |---|---|---|---|
 | `id` | UUID | PRIMARY KEY | Unique record identifier |
@@ -168,6 +175,7 @@ Aggregated performance store queried by Group C controller to evaluate candidate
 | `complexity_level` | INTEGER | NOT NULL, INDEX | Complexity rating (`1`, `2`, `3`) |
 | `topology_signature` | VARCHAR(128) | NOT NULL, INDEX | Canonical topology string (e.g. `Analyst->Writer`) |
 | `protocol_origin` | VARCHAR(32) | NOT NULL | Protocol provenance (`CALIBRATION`, `FROZEN`, `ONLINE_BATCH`) |
+| `source_run_ids` | JSONB | NOT NULL, DEFAULT `[]` | List of contributing `experimental_runs.id` UUIDs for full traceability |
 | `sample_count` | INTEGER | NOT NULL, DEFAULT `0` | Number of verified runs aggregated ($N_{C,T}$) |
 | `mean_wall_clock_ms` | FLOAT | NULLABLE | Mean latency across historical runs |
 | `std_wall_clock_ms` | FLOAT | NULLABLE | Standard deviation of latency |
